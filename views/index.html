@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <title>Dapp Application</title>
+    <style>
+    	#title {
+    		font-size: 30px;
+    	}
+    	#contractaddress {
+    		width: 400px;
+    	}
+    	.inputField {
+				background-color: #000000;
+				border: #AAAAAA;
+				color: #FFFFFF;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;   		
+    	}
+    	.button {
+				background-color: #4CAF50;
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+			}
+    </style>
+    <script src="/scripts/web3.min.js"></script>
+  </head>
+  <body>
+  </body>
+	  <div>
+	    <span id='title'>Donation Contract</span>
+	    <br/><br/>
+	    <a href="https://remix.readthedocs.io/en/latest/tutorial_mist.html" target="_new">Mist Tutorial Instructions</a>
+	    <br/><br/>
+	    <input id='contractaddress' class='inputField' placeholder='contract address'></intput>
+	    <br/>
+	    <div>
+	        <br/>
+	        <input id='fromGive' class='inputField' placeholder='from' ></intput>
+	        <input placeholder='amount' id='valueGive' class='inputField'></intput>
+	        <button id="fallbackbtn" class="button" onclick="donate()">give</button>
+	        <br/><br/>
+	        <input id='fromMoveFund' class='inputField' placeholder='from' ></intput>
+	        <input id='moveFundTo' class='inputField' placeholder='move to' ></intput>
+	        <input id='amountToMove' class='inputField' placeholder='amount' ></intput>
+	        <button id="movefundbtn" class="button" onclick="movefund()">moveFund</button>
+	        <br/><br/>
+	        <div id='wait' ></div>
+	    </div>
+	    <br/><br/>
+	    <div id='log'></div>
+	</div>
+
+	<script type="text/javascript">
+		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		console.log("Connected to Web3 Status: " + web3.isConnected());
+		if (web3.eth != undefined) {
+			console.log("Connected to Geth (Go Ethereum) HTTP-RPC server");
+		}
+		var contractspec = web3.eth.contract([{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"moveFund","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"donate","outputs":[],"payable":true,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_amount","type":"uint256"}],"name":"fundMoved","type":"event"}]);
+
+		function donate () {
+		    var donation = contractspec.at(document.getElementById('contractaddress').value);
+		    donation.donate(
+			    {
+			        from: document.getElementById('fromGive').value,
+			        value: document.getElementById('valueGive').value
+			    }, function (error, txHash) {
+			        tryTillResponse(txHash, function (error, receipt) {
+			            alert('Completed donation. Transaction Receipt: ' + txHash);
+			        })
+			    }
+		    )
+		}
+
+		function movefund () {
+		    var donation = contractspec.at(document.getElementById('contractaddress').value);
+		    donation.moveFund(
+		        document.getElementById('moveFundTo').value,
+		        document.getElementById('amountToMove').value,
+		        function (error, txHash) {
+		            tryTillResponse(txHash, function (error, receipt) {
+		                alert('Completed moving fund. Transaction Receipt: ' + txHash);
+		            })
+		        }
+		    );
+		}
+
+		function tryTillResponse (txhash, done) {
+		    document.getElementById('wait').innerHTML = 'Waiting for the transaction to be mined ...';
+		    web3.eth.getTransactionReceipt(txhash, function (err, result) {
+		    		console.log("Error: " + err);
+		    		console.log("Result: " + result);
+		        if (!err && !result) {
+		            // Try again with a bit of delay
+		            setTimeout(function () { tryTillResponse(txhash, done) }, 500);
+		        } else {
+		            document.getElementById('wait').innerHTML = '';
+		            var log = document.createElement("div");
+		            log.innerHTML = JSON.stringify(result);
+		            document.getElementById('log').appendChild(log);
+		            done(err,result);
+		        }
+		    })
+		}
+	</script>
+</html>

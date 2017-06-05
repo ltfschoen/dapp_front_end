@@ -1,0 +1,16 @@
+{
+  "name": "dapp_front_end",
+  "version": "1.0.0",
+  "description": "dapp front-end web server for smart contract transaction using mist",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": "https://github.com/ltfschoen/dapp_front_end",
+  "author": "Luke Schoen <ltfschoen@gmail.com>",
+  "license": "GNU",
+  "dependencies": {
+    "express": "^4.15.3",
+    "web3": "^0.19.0"
+  }
+}
