@@ -54,6 +54,6 @@
 
 ## Screenshots
 
-	![alt tag](https://raw.githubusercontent.com/ltfschoen/dapp_front_end/master/screenshots/dapp_front_end.png)
+![alt tag](https://raw.githubusercontent.com/ltfschoen/dapp_front_end/master/screenshots/dapp_front_end.png)
 
 
