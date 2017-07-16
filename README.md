@@ -9,7 +9,7 @@
 * Create Blockchain Test Directory:
 	
 	```
-	mkdir ~/blockchain/test_chain_directory/
+	mkdir -p ~/blockchain/test_chain_directory/
 	```
 
 * Run Geth (Go Ethereum) Test Node HTTP-RPC server endpoint at http://0.0.0.0:8545
